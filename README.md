@@ -15,7 +15,7 @@ One Importer at least
 - [LSMASH](https://github.com/l-smash/l-smash)
 
 To support vapoursynth scripts
-- [Python] (optional)
+- Python (optional)
 
 # Compilation
 
