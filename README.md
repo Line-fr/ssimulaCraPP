@@ -14,6 +14,7 @@ One Importer at least
 - [bestsource](https://github.com/vapoursynth/bestsource)
 - [LSMASH](https://github.com/l-smash/l-smash)
 
+To support vapoursynth scripts
 - [Python] (optional)
 
 # Compilation
@@ -25,6 +26,7 @@ To install with support for vapoursynth script inputs (requires python)
 To install without support for vapoursynth script inputs
 
 `make buildNoScript`
+
 # Usage
 
 usage: ./ssimulaCraPP [-h] [--source SOURCE] [--encoded ENCODED] [--sourceScript SCRIPT OUTPUTNODE] [--encodedScript SCRIPT OUTPUTNODE]
