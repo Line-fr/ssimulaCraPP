@@ -28,7 +28,7 @@ To install without support for vapoursynth script inputs
 `make buildNoScript`
 
 # Usage
-
+```
 usage: ./ssimulaCraPP [-h] [--source SOURCE] [--encoded ENCODED] [--sourceScript SCRIPT OUTPUTNODE] [--encodedScript SCRIPT OUTPUTNODE]
                     [-i {ffms2,bestsource,lsmash}] [-si {ffms2,bestsource,lsmash}]
                     [-ei {ffms2,bestsource,lsmash}]
@@ -59,4 +59,4 @@ options:
                         setting this to 5 will calculate every 5th frame.
   --start START         Start frame. Default: 0 (First frame).
   --end END             End frame. Default: (Last frame).
-  --installed           Print out a list of dependencies and whether they are installed then exit.
+  --installed           Print out a list of dependencies and whether they are installed then exit.```
