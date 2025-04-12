@@ -421,7 +421,7 @@ int main(int argc, char** argv){
 
     MetricComputer met(api, coremetric, plugin, metric);
     if (threads == -1) threads = infos.numThreads;
-    std::vector<float> result = met.compute(node1, node2, start, end, threads, gputhreads=gputhreads);
+    std::vector<float> result = met.compute(node1, node2, start, end, skip, threads, gputhreads=gputhreads);
     std::cout << "Computed metrics on " << result.size() << " frames: " << std::endl;
 
     std::sort(result.begin(), result.end());

@@ -15,7 +15,9 @@ public:
     Api& api;
     METRICSPLUGINS plugintype;
     METRICS type;
-    MetricdatabackStruct(std::counting_semaphore<semasize>& sema, std::vector<float>& out, Api& api, METRICSPLUGINS plugintype, METRICS type) : sema(sema), out(out), api(api), plugintype(plugintype), type(type){}
+    int start;
+    int skip;
+    MetricdatabackStruct(std::counting_semaphore<semasize>& sema, std::vector<float>& out, Api& api, METRICSPLUGINS plugintype, METRICS type, int start, int skip) : sema(sema), out(out), api(api), plugintype(plugintype), type(type), start(start), skip(skip) {}
 };
 
 void MetricAcquireCallback(void* data, const VSFrame* f, int n, VSNode* node, const char* errorMsg){
@@ -40,7 +42,7 @@ void MetricAcquireCallback(void* data, const VSFrame* f, int n, VSNode* node, co
 
     dat->api.freeFrame(f);
 
-    dat->out[n] = res;
+    dat->out[(n-dat->start)/dat->skip] = res;
     dat->lock.lock();
     dat->avg = ((dat->currentnum*dat->avg)+res)/(dat->currentnum+1);
     dat->currentnum++;
@@ -113,7 +115,7 @@ public:
                 break;
         }
     }
-    std::vector<float> compute(std::shared_ptr<VSNodeWrapper> node1, std::shared_ptr<VSNodeWrapper> node2, int start= 0, int end = -1, int prefetch = 32, int gputhreads=4){
+    std::vector<float> compute(std::shared_ptr<VSNodeWrapper> node1, std::shared_ptr<VSNodeWrapper> node2, int start= 0, int end = -1, int skip = 1, int prefetch = 32, int gputhreads=4){
         if (end < 0) end += node1->videoinfo->numFrames;
         if (end > node1->videoinfo->numFrames) end = node1->videoinfo->numFrames;
         if (start > end) start = end;
@@ -183,8 +185,8 @@ public:
         }
         
         std::counting_semaphore<semasize> sema(prefetch);
-        std::vector<float> res(end-start);
-        MetricdatabackStruct data(sema, res, api, plugintype, type);
+        std::vector<float> res((end-start)/skip);
+        MetricdatabackStruct data(sema, res, api, plugintype, type, start, skip);
         int print_refresh_min = 50;
         int last_refresh = start;
         int length = 50;
@@ -195,7 +197,7 @@ public:
             std::cout << " ";
         }
         std::cout << "] 0% Avg: NONE FPS: 0.";
-        for (int i = start; i < end; i++){
+        for (int i = start; i < end; i+=skip){
             if ((i+1)*length/(end-start) != (i)*length/(end-start) || print_refresh_min <= (i-last_refresh)){ //switch!
                 std::cout << '\r' << "[";
                 for (int j = 0; j < length; j++){
