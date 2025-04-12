@@ -185,7 +185,8 @@ public:
         }
         
         std::counting_semaphore<semasize> sema(prefetch);
-        std::vector<float> res((end-start)/skip);
+        int totalframe = (end-start)/skip;
+        std::vector<float> res(totalframe);
         MetricdatabackStruct data(sema, res, api, plugintype, type, start, skip);
         int print_refresh_min = 50;
         int last_refresh = start;
@@ -198,10 +199,10 @@ public:
         }
         std::cout << "] 0% Avg: NONE FPS: 0.";
         for (int i = start; i < end; i+=skip){
-            if ((i+1)*length/(end-start) != (i)*length/(end-start) || print_refresh_min <= (i-last_refresh)){ //switch!
+            if ((i+1)*length/((end-start)/skip) != (i)*length/((end-start)/skip) || print_refresh_min <= (i-last_refresh)){ //switch!
                 std::cout << '\r' << "[";
                 for (int j = 0; j < length; j++){
-                    if (j < (i+1)*length/(end-start)) {
+                    if (j < (i+1)*length/((end-start))) {
                         std::cout << "|";
                     } else {
                         std::cout << " ";
@@ -213,7 +214,7 @@ public:
                 now = std::chrono::system_clock::now();
                 int totalmilli = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count()-init;
                 float fps = (float)completed*1000/totalmilli;
-                std::cout << "] " << (int)((float)completed*100/(end-start)) << "% Avg: " << data.avg << " FPS: " << fps <<  "                 ";
+                std::cout << "] " << (int)((float)completed*100/((end-start)/skip)) << "% Avg: " << data.avg << " FPS: " << fps <<  "                 ";
                 std::cout << std::flush;
                 last_refresh = i;
             }
