@@ -1,3 +1,4 @@
+#include <fstream>
 #include "preprocessor.hpp"
 #include "apiWrapper.hpp"
 #include "videoOpener.hpp"
@@ -35,7 +36,8 @@ options:
                         setting this to 5 will calculate every 5th frame.
   --start START         Start frame. Default: 0 (First frame).
   --end END             End frame. Default: (Last frame).
-  --installed           Print out a list of dependencies and whether they are installed then exit.)" << std::endl;
+  --installed           Print out a list of dependencies and whether they are installed then exit.
+  --json PATH           Outputs a file with every score that got computed in a list)" << std::endl;
 }
 
 bool plugingIsInstalled(Api& api, VSCore* core, METRICSPLUGINS plugin){
@@ -107,6 +109,8 @@ int main(int argc, char** argv){
     int outputnum = -1;
     int outputnum2 = -1;
 
+    std::string JSONFILE = "";
+
     Api api;
 
     for (unsigned int i = 0; i < args.size(); i++){
@@ -139,6 +143,13 @@ int main(int argc, char** argv){
                 std::cout << "a script was specified as --source, use --sourceSCRIPT instead" << std::endl;
                 return 0;
             }
+            i++;
+        } else if (args[i] == "--json") {
+            if (i == args.size()-1){
+                std::cout << "--json needs an argument" << std::endl;
+                return 0;
+            }
+            JSONFILE = args[i+1];
             i++;
         } else if (args[i] == "--encoded") {
             if (i == args.size()-1){
@@ -423,6 +434,21 @@ int main(int argc, char** argv){
     if (threads == -1) threads = infos.numThreads;
     std::vector<float> result = met.compute(node1, node2, start, end, skip, threads, gputhreads=gputhreads);
     std::cout << "Computed metrics on " << result.size() << " frames: " << std::endl;
+
+    if (JSONFILE != ""){
+        std::ofstream f(JSONFILE);
+
+        if (!f){
+            std::cout << "failed to open output json file : " << JSONFILE << std::endl;
+        } else {
+            f << "[";
+            for (int i = 0; i < result.size(); i++){
+                f << result[i];
+                if (i != result.size()-1) f << ", ";
+            }
+            f << "]";
+        }
+    }
 
     std::sort(result.begin(), result.end());
 
