@@ -116,7 +116,7 @@ public:
         }
     }
     std::vector<float> compute(std::shared_ptr<VSNodeWrapper> node1, std::shared_ptr<VSNodeWrapper> node2, int start= 0, int end = -1, int skip = 1, int prefetch = 32, int gputhreads=4){
-        if (end < 0) end += node1->videoinfo->numFrames;
+        if (end < 0) end = node1->videoinfo->numFrames;
         if (end > node1->videoinfo->numFrames) end = node1->videoinfo->numFrames;
         if (start > end) start = end;
         if (end-start < prefetch) prefetch = end-start;

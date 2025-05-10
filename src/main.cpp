@@ -162,6 +162,7 @@ int main(int argc, char** argv){
                 return 0;
             }
             i++;
+#if Use_Vsscript==1
         } else if (args[i] == "--sourceSCRIPT") {
             if (i >= args.size()-2 || args[i+2][0] == '-'){
                 std::cout << "--sourceSCRIPT needs 2 arguments" << std::endl;
@@ -180,7 +181,6 @@ int main(int argc, char** argv){
             }
             i += 2;
         } else 
-#if Use_Vsscript==1
         if (args[i] == "--encodedSCRIPT") {
             if (i >= args.size()-2 || args[i+2][0] == '-'){
                 std::cout << "--encodedSCRIPT needs 2 arguments" << std::endl;
@@ -198,6 +198,7 @@ int main(int argc, char** argv){
                 return 0;
             }
             i += 2;
+#endif
         } else if (args[i] == "-i" || args[i] == "--importer"){
             if (i == args.size()-1){
                 std::cout << "-i needs an argument" << std::endl;
@@ -224,7 +225,6 @@ int main(int argc, char** argv){
             }
             i++;
         } else 
-#endif
         if (args[i] == "-si" || args[i] == "--source-importer"){
             if (i == args.size()-1){
                 std::cout << "-si needs an argument" << std::endl;

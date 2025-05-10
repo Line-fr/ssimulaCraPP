@@ -5,7 +5,7 @@
 void toRGBS(std::shared_ptr<VSNodeWrapper> source, VSCore *core, Api vsapi){
     const VSVideoInfo *vi = source->videoinfo;
 
-    if ((vi->format.bitsPerSample != 32) && (vi->format.colorFamily == cfRGB) && vi->format.sampleType == stFloat){
+    if ((vi->format.bitsPerSample == 32) && (vi->format.colorFamily == cfRGB) && vi->format.sampleType == stFloat){
         return;
     }
 
